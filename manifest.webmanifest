@@ -1,6 +1,6 @@
 {
   "name": "上高野バス 平日ダイヤ",
-  "short_name": "バスダイヤ",
+  "short_name": "バス",
   "description": "上高野⇄京大エリア 市バス31/65 平日ダイヤ（行き・帰り）",
   "lang": "ja",
   "start_url": ".",
