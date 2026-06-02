@@ -28,7 +28,7 @@
   .wrap{max-width:480px;margin:0 auto;height:100%;display:flex;flex-direction:column;
     padding-top:max(16px,env(safe-area-inset-top));padding-left:14px;padding-right:14px;padding-bottom:8px;}
   .hd{flex-shrink:0}
-  #list{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
+  #list{flex:1 1 0;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
   #list::-webkit-scrollbar{width:0;height:0;display:none}
   h1{font-size:17px;font-weight:600;letter-spacing:.01em}
   .meta{font-size:11px;color:var(--hint);margin:7px 0 0;text-align:center}
@@ -148,7 +148,24 @@ window.addEventListener('pageshow',function(){refresh();});
     show(dx<0?'back':'go');
   },{passive:true});
 })();
-if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+if('serviceWorker' in navigator){
+  var hadController=!!navigator.serviceWorker.controller,reloaded=false;
+  // When a new service worker takes control (after an update), reload once so the
+  // latest HTML/CSS is shown. iOS PWAs resume from background without navigating,
+  // so we also poll for updates on resume — giving an automatic light refresh.
+  navigator.serviceWorker.addEventListener('controllerchange',function(){
+    if(reloaded)return;
+    if(hadController){reloaded=true;location.reload();}
+    hadController=true;
+  });
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('sw.js').then(function(reg){
+      document.addEventListener('visibilitychange',function(){
+        if(document.visibilityState==='visible')reg.update().catch(function(){});
+      });
+    }).catch(function(){});
+  });
+}
 </script>
 </body>
 </html>

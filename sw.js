@@ -1,4 +1,4 @@
-const CACHE = 'kamitakano-bus-v6';
+const CACHE = 'kamitakano-bus-v7';
 const ASSETS = [
   './',
   './index.html',
