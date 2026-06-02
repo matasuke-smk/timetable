@@ -28,7 +28,8 @@
   .wrap{max-width:480px;margin:0 auto;height:100%;display:flex;flex-direction:column;
     padding:max(16px,env(safe-area-inset-top)) 14px max(8px,calc(env(safe-area-inset-bottom) - 18px));}
   .hd{flex-shrink:0}
-  #list{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+  #list{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
+  #list::-webkit-scrollbar{width:0;height:0;display:none}
   h1{font-size:17px;font-weight:600;letter-spacing:.01em}
   .meta{font-size:13px;color:var(--ink);margin:3px 0 14px}
   .route{font-size:19px;font-weight:600;color:var(--ink);margin:2px 2px 9px;display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap}
