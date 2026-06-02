@@ -1,7 +1,8 @@
-const CACHE = 'kamitakano-bus-v4';
+const CACHE = 'kamitakano-bus-v5';
 const ASSETS = [
   './',
   './index.html',
+  './timetable.json',
   './manifest.webmanifest',
   './icon-192.png',
   './icon-512.png',
