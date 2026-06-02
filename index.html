@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>上高野バス 平日ダイヤ</title>
+<meta name="theme-color" content="#0f0f10">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="バスダイヤ">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+  :root{
+    --bg:#0f0f10; --card:#1a1a1c; --line:rgba(255,255,255,.09);
+    --ink:#f1f1f1; --sub:#9b9a96; --hint:#65645f;
+    --c31:#5aa7ee; --c31bg:#15314c; --c65:#3fcca1; --c65bg:#123a30;
+    --next:#3a3216; --nextline:#8a7426; --nextink:#f3da8a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.4;
+    padding:max(16px,env(safe-area-inset-top)) 14px calc(20px + env(safe-area-inset-bottom));
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:480px;margin:0 auto}
+  h1{font-size:17px;font-weight:600;letter-spacing:.01em}
+  .meta{font-size:13px;color:var(--ink);margin:3px 0 14px}
+  .seg{display:flex;background:#161617;border:.5px solid var(--line);border-radius:13px;padding:4px;gap:4px;margin-bottom:14px}
+  .seg button{flex:1;border:0;background:transparent;color:var(--sub);font-size:15px;font-weight:600;padding:11px 0;border-radius:10px;font-family:inherit;cursor:pointer;transition:background .15s,color .15s}
+  .seg button.on{background:#2c2c2f;color:#fff}
+  .route{font-size:19px;font-weight:600;color:var(--ink);margin:2px 2px 12px;display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap}
+  .route .ar{color:var(--c65);font-weight:500}
+  .card{background:var(--card);border:.5px solid var(--line);border-radius:14px;overflow:hidden}
+  .row{display:flex;align-items:center;gap:10px;padding:13px 15px;border-top:.5px solid var(--line)}
+  .row:first-child{border-top:none}
+  .b{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:22px;border-radius:6px;font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;flex-shrink:0}
+  .b31{background:var(--c31bg);color:var(--c31)}
+  .b65{background:var(--c65bg);color:var(--c65)}
+  .time{display:flex;align-items:center;gap:8px;font-size:18px;font-variant-numeric:tabular-nums;letter-spacing:.01em}
+  .time b{font-weight:600}
+  .time .to{color:var(--hint);font-size:15px}
+  .time .arr{color:var(--sub);font-weight:500}
+  .row .right{margin-left:auto;display:flex;align-items:center;gap:9px}
+  .dur{font-size:13px;color:var(--sub);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .row.next{background:var(--next)}
+  .row.next .tag{font-size:10px;font-weight:700;color:var(--nextink);background:rgba(0,0,0,.25);border:.5px solid var(--nextline);border-radius:99px;padding:2px 8px;white-space:nowrap}
+  .foot{margin-top:13px;padding:0 4px;font-size:11px;color:var(--hint);line-height:1.7}
+  .legend{display:flex;gap:14px;margin-top:6px}
+  .legend span{display:flex;align-items:center;gap:5px}
+  .legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="meta">平日のみ・2026年3月20日改正（お盆/年末年始を除く）</div>
+
+  <div class="seg" role="tablist">
+    <button id="t-go" role="tab" onclick="show('go')">行き</button>
+    <button id="t-back" role="tab" onclick="show('back')">帰り</button>
+  </div>
+
+  <div class="route" id="route"></div>
+  <div class="card" id="list"></div>
+
+  <div class="foot">
+    <div id="status"></div>
+    <div>発（左）→着（右）、右端は所要時間。</div>
+    <div class="legend">
+      <span><i style="background:var(--c31)"></i>31 祇園・四条河原町まわり</span>
+      <span><i style="background:var(--c65)"></i>65 烏丸丸太町まわり</span>
+    </div>
+  </div>
+</div>
+
+<script>
+var DATA={
+  go:{route:["上高野 発","近衛通 着"],trips:[
+    [65,"7:21","7:50"],[31,"7:48","8:11"],[65,"8:00","8:30"],[31,"8:26","8:49"],
+    [65,"8:39","9:09"],[31,"9:06","9:29"],[65,"9:19","9:49"]
+  ]},
+  back:{route:["京大病院前 発","上高野 着"],trips:[
+    [31,"15:27","15:51"],[65,"15:59","16:31"],[31,"16:27","16:51"],[65,"16:49","17:21"],
+    [31,"17:17","17:41"],[65,"17:37","18:09"],[31,"18:06","18:30"],[65,"18:29","19:01"],
+    [31,"18:51","19:13"],[65,"19:09","19:38"],[31,"19:31","19:52"],[65,"19:47","20:16"]
+  ]}
+};
+function toMin(t){var p=t.split(":");return +p[0]*60+ +p[1];}
+function show(k){
+  document.getElementById('t-go').className=k==='go'?'on':'';
+  document.getElementById('t-back').className=k==='back'?'on':'';
+  var d=DATA[k];
+  document.getElementById('route').innerHTML=d.route[0]+' <span class="ar">→</span> '+d.route[1];
+  var now=new Date(),wd=now.getDay()!==0&&now.getDay()!==6,nm=now.getHours()*60+now.getMinutes(),done=false;
+  var html='';
+  d.trips.forEach(function(tr){
+    var nx=wd&&!done&&toMin(tr[1])>=nm;if(nx)done=true;
+    var dur=toMin(tr[2])-toMin(tr[1]);
+    html+='<div class="row'+(nx?' next':'')+'">'
+      +'<span class="b b'+tr[0]+'">'+tr[0]+'</span>'
+      +'<span class="time"><b>'+tr[1]+'</b><span class="to">→</span><b class="arr">'+tr[2]+'</b></span>'
+      +'<span class="right">'+(nx?'<span class="tag">次のバス</span>':'')+'<span class="dur">'+dur+'分</span></span>'
+      +'</div>';
+  });
+  document.getElementById('list').innerHTML=html;
+}
+(function(){
+  var now=new Date(),st=document.getElementById('status');
+  if(now.getDay()===0||now.getDay()===6) st.textContent='※ 本日は土日です。この表は平日専用です。';
+  show(now.getHours()<12?'go':'back');
+})();
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+</script>
+</body>
+</html>
