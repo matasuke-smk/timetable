@@ -45,7 +45,8 @@
   .row .right{margin-left:auto;display:flex;align-items:center;gap:9px}
   .dur{font-size:13px;color:var(--sub);font-variant-numeric:tabular-nums;white-space:nowrap}
   .row.next{background:var(--next)}
-  .row.next .tag{font-size:10px;font-weight:700;color:var(--nextink);background:rgba(0,0,0,.25);border:.5px solid var(--nextline);border-radius:99px;padding:2px 8px;white-space:nowrap}
+  .tagwrap{flex:1;display:flex;justify-content:center;align-items:center}
+  .row.next .tag{font-size:20px;font-weight:700;color:var(--nextink);background:rgba(0,0,0,.25);border:.5px solid var(--nextline);border-radius:99px;padding:4px 14px;white-space:nowrap}
   .foot{margin-top:13px;padding:0 4px;font-size:11px;color:var(--hint);line-height:1.7}
   .legend{display:flex;gap:14px;margin-top:6px}
   .legend span{display:flex;align-items:center;gap:5px}
@@ -92,7 +93,8 @@ function show(k){
     html+='<div class="row'+(nx?' next':'')+'"'+(nx?' id="nextbus"':'')+'>'
       +'<span class="b b'+tr[0]+'">'+tr[0]+'</span>'
       +'<span class="time"><b>'+tr[1]+'</b><span class="to">→</span><b class="arr">'+tr[2]+'</b></span>'
-      +'<span class="right">'+(nx?'<span class="tag">次のバス</span>':'')+'<span class="dur">'+dur+'分</span></span>'
+      +(nx?'<span class="tagwrap"><span class="tag">次のバス</span></span>':'')
+      +'<span class="right"><span class="dur">'+dur+'分</span></span>'
       +'</div>';
   });
   document.getElementById('list').innerHTML=html;
