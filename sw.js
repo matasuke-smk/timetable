@@ -1,4 +1,4 @@
-const CACHE = 'kamitakano-bus-v5';
+const CACHE = 'kamitakano-bus-v6';
 const ASSETS = [
   './',
   './index.html',
@@ -20,8 +20,26 @@ self.addEventListener('activate', (e) => {
   );
 });
 
+// HTML/JSON (the parts that change) → network-first so updates show immediately when online.
+// Static assets (icons, manifest) → cache-first for speed/offline.
+function isFresh(req) {
+  if (req.mode === 'navigate') return true;
+  const u = new URL(req.url);
+  return /\.(html|json)$/.test(u.pathname) || u.pathname.endsWith('/');
+}
+
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
+  if (isFresh(e.request)) {
+    e.respondWith(
+      fetch(e.request).then((res) => {
+        const copy = res.clone();
+        caches.open(CACHE).then((c) => c.put(e.request, copy)).catch(() => {});
+        return res;
+      }).catch(() => caches.match(e.request))
+    );
+    return;
+  }
   e.respondWith(
     caches.match(e.request).then((cached) => {
       const network = fetch(e.request).then((res) => {
