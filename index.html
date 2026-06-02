@@ -26,13 +26,13 @@
     -webkit-font-smoothing:antialiased;
   }
   .wrap{max-width:480px;margin:0 auto;height:100%;display:flex;flex-direction:column;
-    padding:max(16px,env(safe-area-inset-top)) 14px max(3px,calc((env(safe-area-inset-bottom) - 18px)/3));}
+    padding-top:max(16px,env(safe-area-inset-top));padding-left:14px;padding-right:14px;padding-bottom:8px;}
   .hd{flex-shrink:0}
   #list{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
   #list::-webkit-scrollbar{width:0;height:0;display:none}
   h1{font-size:17px;font-weight:600;letter-spacing:.01em}
-  .meta{font-size:13px;color:var(--ink);margin:3px 0 14px}
-  .route{font-size:19px;font-weight:600;color:var(--ink);margin:2px 2px 9px;display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap}
+  .meta{font-size:11px;color:var(--hint);margin:7px 0 0;text-align:center}
+  .route{font-size:22px;font-weight:600;color:var(--ink);margin:2px 2px 9px;display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap}
   .dots{display:flex;justify-content:center;gap:11px;margin:0 0 14px}
   .dot{width:9px;height:9px;border-radius:50%;background:var(--hint);cursor:pointer;transition:background .15s,transform .15s}
   .dot.on{background:var(--ink);transform:scale(1.3)}
@@ -61,7 +61,6 @@
 <body>
 <div class="wrap">
   <div class="hd">
-    <div class="meta">平日のみ・2026年3月20日改正（お盆/年末年始を除く）</div>
     <div class="route" id="route"></div>
     <div class="dots" id="dots">
       <span class="dot" id="d-go" onclick="show('go')" role="button" aria-label="行き"></span>
@@ -76,6 +75,7 @@
       <span><i style="background:var(--c31)"></i>31 祇園・四条河原町まわり</span>
       <span><i style="background:var(--c65)"></i>65 烏丸丸太町まわり</span>
     </div>
+    <div class="meta">平日のみ・2026年3月20日改正（お盆/年末年始を除く）</div>
   </div>
 </div>
 
