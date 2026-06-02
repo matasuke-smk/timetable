@@ -100,9 +100,16 @@ function show(k){
       +'<span class="right"><span class="dur">'+dur+'分</span></span>'
       +'</div>';
   });
-  document.getElementById('list').innerHTML=html;
+  var list=document.getElementById('list');
+  list.scrollTop=0;
+  list.innerHTML=html;
   var nb=document.getElementById('nextbus');
-  if(nb)nb.scrollIntoView({block:'center',behavior:'auto'});
+  // Position the scroll directly on the list container (scrollIntoView also moves
+  // ancestors and leaves the scrollbar out of sync when the view is swapped).
+  if(nb){
+    var lr=list.getBoundingClientRect(),nr=nb.getBoundingClientRect();
+    list.scrollTop+=(nr.top-lr.top)-(list.clientHeight-nr.height)/2;
+  }
 }
 (function(){
   var now=new Date(),st=document.getElementById('status');
