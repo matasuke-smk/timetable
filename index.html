@@ -112,19 +112,29 @@ function show(k){
     list.scrollTop+=(nr.top-lr.top)-(list.clientHeight-nr.height)/2;
   }
 }
+function defaultView(){return new Date().getHours()<12?'go':'back';}
+// Re-evaluate by current time: morning→行き, afternoon→帰り. Also refreshes the
+// 次発 highlight. Runs on first load and whenever the app returns to the foreground
+// (iOS PWAs resume from background without reloading), acting as a light refresh.
+function refresh(){
+  if(!DATA)return;
+  var d=new Date().getDay(),st=document.getElementById('status');
+  st.textContent=(d===0||d===6)?'※ 本日は土日です。この表は平日専用です。':'';
+  show(defaultView());
+}
 (function(){
-  var now=new Date(),st=document.getElementById('status');
-  if(now.getDay()===0||now.getDay()===6) st.textContent='※ 本日は土日です。この表は平日専用です。';
   fetch('timetable.json').then(function(r){return r.json();}).then(function(j){
     DATA={
       go:{route:[j.go.from+' 発',j.go.to+' 着'],trips:j.go.trips},
       back:{route:[j.back.from+' 発',j.back.to+' 着'],trips:j.back.trips}
     };
-    show(now.getHours()<12?'go':'back');
+    refresh();
   }).catch(function(){
     document.getElementById('list').innerHTML='<div class="row">時刻表を読み込めませんでした。通信環境をご確認のうえ再読み込みしてください。</div>';
   });
 })();
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')refresh();});
+window.addEventListener('pageshow',function(){refresh();});
 (function(){
   var sx=0,sy=0,tracking=false;
   document.addEventListener('touchstart',function(e){
